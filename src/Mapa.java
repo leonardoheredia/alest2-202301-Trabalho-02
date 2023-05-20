@@ -1,7 +1,6 @@
 import java.util.ArrayList;
 
 public class Mapa {
-
     private int linhas;
     private int colunas;
     private char[][] mapaDeChar;
@@ -10,7 +9,6 @@ public class Mapa {
     public MapaGrafo getMapaGrafo() {
         return mapaGrafo;
     }
-
     public void setMapaGrafo(MapaGrafo mapaGrafo) {
         this.mapaGrafo = mapaGrafo;
     }
@@ -43,11 +41,9 @@ public class Mapa {
     public void setCaminho(ArrayList<MapaCelula> caminho) {
         this.caminho = caminho;
     }
-
     public void setCaminhos(ArrayList<ArrayList<MapaCelula>> caminhos) {
         this.caminhos = caminhos;
     }
-
     public ArrayList<ArrayList<MapaCelula>> getCaminhos() {
         return caminhos;
     }

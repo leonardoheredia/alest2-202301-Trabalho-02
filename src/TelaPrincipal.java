@@ -4,13 +4,15 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
 import java.util.ArrayList;
-import java.util.List;
 
 public class TelaPrincipal extends JFrame implements ActionListener{
+    public static final String MENU_PRINCIPAL_ABRIR = "menuPrincipalAbrir";
+    public static final String MENU_PRINCIPAL_SAIR = "menuPrincipalSair";
+    public static final String MENU_PRINCIPAL_NAVEGAR = "menuPrincipalNavegar";
     private JMenuBar menuBar;
     private JToolBar toolBar;
     private JTabbedPane painelAbas;
-    private JPanel painelTopo;
+    private final JPanel painelTopo;
     private PainelMapa painelDesenho;
     private JTextArea textArea;
     private JPanel painelRodape;
@@ -18,7 +20,6 @@ public class TelaPrincipal extends JFrame implements ActionListener{
     private JPanel painelMensagens;
     private JPanel painelMensagens2;
     private JLabel labelMensagens;
-    private ActionListener listenerAcoes;
     private LeitorArquivoMapa arquivoDoMapa;
     private Mapa mapa;
     public TelaPrincipal() {
@@ -41,10 +42,10 @@ public class TelaPrincipal extends JFrame implements ActionListener{
     }
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getActionCommand().equals("sair")) {
+        if(e.getActionCommand().equals(MENU_PRINCIPAL_SAIR)) {
             System.exit(0);
         }
-        else if(e.getActionCommand().equals("abrir")) {
+        else if(e.getActionCommand().equals(MENU_PRINCIPAL_ABRIR)) {
             JFileChooser seletorDeArquivo = new JFileChooser();
             int opcao = seletorDeArquivo.showOpenDialog(this);
             if(opcao==JFileChooser.APPROVE_OPTION) {
@@ -55,12 +56,11 @@ public class TelaPrincipal extends JFrame implements ActionListener{
                 labelMensagens.setText("abrir arquivo cancelado");
             }
         }
-        else if(e.getActionCommand().equals("NAVEGAR")) {
+        else if(e.getActionCommand().equals(MENU_PRINCIPAL_NAVEGAR)) {
             navegar();
             repaint();
         }
     }
-
     private void lerArquivoMapa(File arquivoSelecionado) {
         arquivoDoMapa = new LeitorArquivoMapa();
         if(!arquivoDoMapa.ler(arquivoSelecionado.getAbsolutePath())) {
@@ -83,10 +83,10 @@ public class TelaPrincipal extends JFrame implements ActionListener{
         JMenu menuArquivo = new JMenu("Arquivo");
         JMenuItem menuItemAbrir = new JMenuItem("Abrir");
         JMenuItem menuItemSair = new JMenuItem("Sair");
-        menuItemAbrir.setActionCommand("abrir");
+        menuItemAbrir.setActionCommand(MENU_PRINCIPAL_ABRIR);
         menuItemAbrir.addActionListener(this);
 
-        menuItemSair.setActionCommand("sair");
+        menuItemSair.setActionCommand(MENU_PRINCIPAL_SAIR);
         menuItemSair.addActionListener(this);
 
         menuArquivo.add(menuItemAbrir);
@@ -130,7 +130,7 @@ public class TelaPrincipal extends JFrame implements ActionListener{
         toolBar = new JToolBar();
         JButton botao1 = new JButton("Iniciar navegação");
         botao1.addActionListener(this);
-        botao1.setActionCommand("NAVEGAR");
+        botao1.setActionCommand(MENU_PRINCIPAL_NAVEGAR);
         toolBar.add(botao1);
         this.painelTopo.add(toolBar,BorderLayout.WEST);
     }
@@ -141,25 +141,23 @@ public class TelaPrincipal extends JFrame implements ActionListener{
         painelMensagens.add(labelMensagens);
         this.painelTopo.add(painelMensagens, BorderLayout.SOUTH);
     }
-
     private void navegar() {
         System.out.println("Navegacao iniciada");
         textArea.setText("");
         MapaGrafo mg = this.mapa.getMapaGrafo();
         int NUMERO_PORTOS = 10;
         int[] verticesPortos = new int[NUMERO_PORTOS+1];
+        //carrega para array de portos os portos do grafo
         for (int i = 0; i < NUMERO_PORTOS+1; i++) verticesPortos[i] = -1;
-
         for (int i = 1; i < NUMERO_PORTOS+1; i++) {
             verticesPortos[i] = mg.getIndiceVerticePorto(i);
         }
 
-
-        int portoAtual = 1;
-        int portoSeguinte = 2;
         ArrayList<MapaCelula> caminhoCompleto = new ArrayList<>();
         ArrayList<ArrayList<MapaCelula>> caminhos = new ArrayList<>();
-
+        int portoAtual = 1;
+        int portoSeguinte = 2;
+        boolean voltouPorto1 = false;
         while(true) {
             ArrayList<MapaCelula> trecho = mg.navegarEmLargura(verticesPortos[portoAtual], verticesPortos[portoSeguinte]);
             textArea.append("Porto " + portoAtual + " para " + portoSeguinte + " --> ");
@@ -168,7 +166,8 @@ public class TelaPrincipal extends JFrame implements ActionListener{
                 portoSeguinte++;
             }
             else {
-                textArea.append(String.valueOf(trecho.size()));
+                int consumo = trecho.size() - 1;
+                textArea.append(String.valueOf(consumo));
                 caminhoCompleto.addAll(trecho);
 
                 caminhos.add(trecho);
@@ -177,7 +176,11 @@ public class TelaPrincipal extends JFrame implements ActionListener{
                 portoSeguinte++;
             }
             textArea.append(System.lineSeparator());
-            if(verticesPortos[portoSeguinte]==-1) break;
+            if(voltouPorto1) break;
+            if(verticesPortos[portoSeguinte]==-1) { //acabou, volta para o primeiro
+                portoSeguinte = 1;
+                voltouPorto1 = true;
+            }
         }
         mapa.setCaminho(caminhoCompleto);
         mapa.setCaminhos(caminhos);

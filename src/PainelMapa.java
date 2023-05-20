@@ -1,5 +1,3 @@
-import Grafos.BuscaEmLargura;
-
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.MouseEvent;
@@ -11,12 +9,15 @@ public class PainelMapa extends JPanel implements MouseListener {
     private Mapa mapa;
     private double alturaCelula;
     private double larguraCelula;
+
     public PainelMapa() {
         addMouseListener(this);
     }
+
     public void setMapa(Mapa mapa) {
         this.mapa = mapa;
     }
+
     @Override
     public void paint(Graphics g) {
         super.paint(g);
@@ -25,9 +26,9 @@ public class PainelMapa extends JPanel implements MouseListener {
         g2.setColor(Color.WHITE);
         g2.fillRect(0, 0, getWidth(), getHeight());
 
-        if(mapa==null)  {
+        if (mapa == null) {
             g2.setColor(Color.BLACK);
-            g2.drawLine(0,0, getWidth(), getHeight());
+            g2.drawLine(0, 0, getWidth(), getHeight());
             return;
         }
 
@@ -35,55 +36,41 @@ public class PainelMapa extends JPanel implements MouseListener {
         this.larguraCelula = (double) getWidth() / (double) mapa.getColunas();
 
         g2.setColor(Color.BLACK);
-        for (int lin = 0; lin <mapa.getLinhas() ;lin++) {
+        for (int lin = 0; lin < mapa.getLinhas(); lin++) {
             for (int col = 0; col < mapa.getColunas(); col++) {
-                if(mapa.getMapaDeChar()[lin][col]=='.') {
+                if (mapa.getMapaDeChar()[lin][col] == '.') {
                     g2.setColor(Color.BLUE);
-                    g2.fill(new Rectangle2D.Double(col*larguraCelula, lin*alturaCelula, larguraCelula, alturaCelula));
-                }
-                else if(mapa.getMapaDeChar()[lin][col]=='*') {
+                    g2.fill(new Rectangle2D.Double(col * larguraCelula, lin * alturaCelula, larguraCelula, alturaCelula));
+                } else if (mapa.getMapaDeChar()[lin][col] == '*') {
                     g2.setColor(Color.GRAY);
-                    g2.fill(new Rectangle2D.Double(col*larguraCelula, lin*alturaCelula, larguraCelula, alturaCelula));
-                }
-                else {
+                    g2.fill(new Rectangle2D.Double(col * larguraCelula, lin * alturaCelula, larguraCelula, alturaCelula));
+                } else {
                     Font f = new Font(Font.DIALOG, Font.BOLD, 12);
                     g2.setColor(Color.WHITE);
-                    g2.fill(new Rectangle2D.Double(col*larguraCelula, lin*alturaCelula, larguraCelula, alturaCelula));
+                    g2.fill(new Rectangle2D.Double(col * larguraCelula, lin * alturaCelula, larguraCelula, alturaCelula));
                     g2.setColor(Color.BLACK);
                     g2.setFont(f);
                     g2.drawString(String.valueOf(mapa.getMapaDeChar()[lin][col]),
-                            (float)(col*larguraCelula+(larguraCelula/2)-2),
-                            (float)(lin*alturaCelula+(alturaCelula/2)) );
+                            (float) (col * larguraCelula + (larguraCelula / 2) - 2),
+                            (float) (lin * alturaCelula + (alturaCelula / 2)));
                 }
             }
         }
 
         //desenhar caminho se houver
 
-        if(!mapa.getCaminhos().isEmpty()) {
+        if (!mapa.getCaminhos().isEmpty()) {
             for (int i = 0; i < mapa.getCaminhos().size(); i++) {
                 ArrayList<MapaCelula> caminho = mapa.getCaminhos().get(i);
 
-                int alterna = 0;
                 for (MapaCelula celula : caminho) {
                     if (mapa.getMapaDeChar()[celula.linha][celula.coluna] == '.') {
-                        if(alterna%2==0) g2.setColor(Color.RED);
-                        else g2.setColor(Color.GREEN);
+                        g2.setColor(Color.RED);
                         g2.fill(new Rectangle2D.Double(celula.coluna * larguraCelula, celula.linha * alturaCelula, larguraCelula, alturaCelula));
-                        alterna++;
                     }
                 }
             }
         }
-
-        /*if(!(mapa.getCaminho().isEmpty())) {
-            for(MapaCelula celula:mapa.getCaminho()) {
-                if(mapa.getMapaDeChar()[celula.linha][celula.coluna]=='.') {
-                    g2.setColor(Color.RED);
-                    g2.fill(new Rectangle2D.Double(celula.coluna*larguraCelula, celula.linha*alturaCelula, larguraCelula, alturaCelula));
-                }
-            }
-        }*/
     }
 
     @Override
@@ -91,7 +78,7 @@ public class PainelMapa extends JPanel implements MouseListener {
         System.out.println(e.getX() + " - " + e.getY());
         int linha, coluna;
         linha = (int) (e.getY() / alturaCelula);
-        coluna = (int)  (e.getX() / larguraCelula);
+        coluna = (int) (e.getX() / larguraCelula);
         System.out.println("celula(" + linha + "," + coluna + ")");
     }
 

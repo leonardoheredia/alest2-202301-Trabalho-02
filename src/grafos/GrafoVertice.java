@@ -1,6 +1,4 @@
-package Grafos;
-
-import java.util.Objects;
+package grafos;
 
 public class GrafoVertice {
     private int chave;

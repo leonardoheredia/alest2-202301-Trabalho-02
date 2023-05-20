@@ -1,11 +1,10 @@
-import Grafos.BuscaEmLargura;
-import Grafos.Grafo;
-import Grafos.GrafoVertice;
+import grafos.BuscaEmLargura;
+import grafos.Grafo;
+import grafos.GrafoVertice;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Objects;
 import java.util.Stack;
 
 public class MapaGrafo {
@@ -47,9 +46,7 @@ public class MapaGrafo {
             }
         }
         conectarArestas();
-        //System.out.println(grafo.toDot());
     }
-
     public void conectarArestas() {
         long t1 = System.currentTimeMillis();
         System.out.println("Iniciou conexao de arestas --> " + LocalDateTime.now());
@@ -79,9 +76,6 @@ public class MapaGrafo {
             int v = p.numeroVertice;
             System.out.println("Grau " + v + " - " + grafo.obterGrau(v));
         }
-    }
-    public int caminhoMinimoDFS(int verticeOrigem, int verticeDestino) {
-        return grafo.caminhoMinimoDFS(verticeOrigem, verticeDestino);
     }
     public int menorCaminhoLargura(int verticeOrigem, int verticeDestino) {
         return grafo.menorCaminhoLargura(verticeOrigem, verticeDestino);
